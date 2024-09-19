@@ -6,24 +6,20 @@ namespace App\Http\Request;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class SignUpStep3Request
+class SignUpStep3Request extends SignUpRequest
 {
-    private $phone;
-    private $mobile;
-
     public function __construct(Request $request)
     {
-        $this->phone = $request->get('phone');
-        $this->mobile = $request->get('mobile');
+        parent::__construct($request, ['phone', 'mobile']);
     }
 
     public function getPhone(): ?string
     {
-        return $this->phone;
+        return $this->getField('phone');
     }
 
     public function getMobile(): ?string
     {
-        return $this->mobile;
+        return $this->getField('mobile');
     }
 }

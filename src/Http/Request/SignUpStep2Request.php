@@ -6,17 +6,15 @@ namespace App\Http\Request;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class SignUpStep2Request
+class SignUpStep2Request extends SignUpRequest
 {
-    private $address;
-
     public function __construct(Request $request)
     {
-        $this->address = $request->get('address');
+        parent::__construct($request, ['address']);
     }
 
     public function getAddress(): ?string
     {
-        return $this->address;
+        return $this->getField('address');
     }
 }

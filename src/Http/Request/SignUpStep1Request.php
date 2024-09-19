@@ -6,24 +6,20 @@ namespace App\Http\Request;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class SignUpStep1Request
+class SignUpStep1Request extends SignUpRequest
 {
-    private $fullname;
-    private $birthdate;
-
     public function __construct(Request $request)
     {
-        $this->fullname = $request->get('fullname');
-        $this->birthdate = $request->get('birthdate');
+        parent::__construct($request, ['fullname', 'birthdate']);
     }
 
     public function getFullname(): ?string
     {
-        return $this->fullname;
+        return $this->getField('fullname');
     }
 
     public function getBirthdate(): ?string
     {
-        return $this->birthdate;
+        return $this->getField('birthdate');
     }
 }

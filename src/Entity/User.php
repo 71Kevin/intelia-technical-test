@@ -52,8 +52,6 @@ class User implements UserInterface
      */
     private $password;
 
-    // Getters e Setters
-
     public function getId(): ?int
     {
         return $this->id;
@@ -143,7 +141,6 @@ class User implements UserInterface
         return $this;
     }
 
-    // Métodos exigidos pela interface UserInterface
     public function getRoles()
     {
         return ['ROLE_USER'];
@@ -156,6 +153,5 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
-        // Limpar dados sensíveis temporários, se existirem
     }
 }

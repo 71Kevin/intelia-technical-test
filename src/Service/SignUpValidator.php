@@ -13,46 +13,25 @@ class SignUpValidator
 {
     private const ERROR_MESSAGE_UNIQUE = 'User with such %s already registered';
 
-    private const FIELD_EMAIL = 'email';
-    private const FIELD_USERNAME = 'username';
+    private UserRepository $userRepository;
+    private ValidatorInterface $validator;
+    private array $errors = [];
 
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-
-    /**
-     * @var ValidatorInterface
-     */
-    private $validator;
-
-    private $errors = [];
-
-    public function __construct(
-        UserRepository $userRepository,
-        ValidatorInterface $validator
-    )
+    public function __construct(UserRepository $userRepository, ValidatorInterface $validator)
     {
         $this->userRepository = $userRepository;
         $this->validator = $validator;
     }
 
-    public function validate(SignUpRequest $signUpRequest)
+    public function validate(SignUpRequest $signUpRequest): bool
     {
         $violations = $this->validator->validate($signUpRequest);
         if ($violations->count() > 0) {
             $this->errors = $this->convertViolations($violations);
-
             return false;
         }
 
-        $uniqueFields = [self::FIELD_EMAIL => $signUpRequest->getEmail(), self::FIELD_USERNAME => $signUpRequest->getUsername()];
-        foreach ($uniqueFields as $field => $value){
-            $users = $this->userRepository->findBy([$field => $value]);
-            if (count($users)) {
-                $this->errors[$field] = sprintf(self::ERROR_MESSAGE_UNIQUE, $field);
-            }
-        }
+        $this->checkUniqueFields($signUpRequest);
 
         return empty($this->errors);
     }
@@ -70,5 +49,24 @@ class SignUpValidator
         }
 
         return $errors;
+    }
+
+    private function checkUniqueFields(SignUpRequest $signUpRequest): void
+    {
+        $uniqueFields = [
+            'email' => $signUpRequest->getEmail(),
+            'username' => $signUpRequest->getUsername(),
+        ];
+
+        foreach ($uniqueFields as $field => $value) {
+            if ($this->isFieldTaken($field, $value)) {
+                $this->errors[$field] = sprintf(self::ERROR_MESSAGE_UNIQUE, $field);
+            }
+        }
+    }
+
+    private function isFieldTaken(string $field, string $value): bool
+    {
+        return count($this->userRepository->findBy([$field => $value])) > 0;
     }
 }

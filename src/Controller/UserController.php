@@ -17,9 +17,9 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class UserController extends AbstractController
 {
-    private $signUpValidator;
-    private $userCreator;
-    private $session;
+    private SignUpValidator $signUpValidator;
+    private UserCreator $userCreator;
+    private SessionInterface $session;
 
     public function __construct(
         SignUpValidator $signUpValidator,
@@ -31,65 +31,74 @@ class UserController extends AbstractController
         $this->session = $session;
     }
 
-    public function signUp(Request $request): Response
+    public function signUp(): Response
     {
         return $this->render('profile/sign-up.html.twig');
+    }
+
+    private function handleStep(Request $request, string $stepKey, array $sessionData): JsonResponse
+    {
+        try {
+            $this->session->set($stepKey, $sessionData);
+
+            return new JsonResponse(['status' => Response::HTTP_OK]);
+        } catch (\Exception $e) {
+            error_log('Error in handleStep ' . $stepKey . ': ' . $e->getMessage());
+
+            return new JsonResponse([
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     public function handleStep1(Request $request): JsonResponse
     {
         $signUpStep1Request = new SignUpStep1Request($request);
-        
-        error_log('handleStep1 called with: ' . json_encode($signUpStep1Request));
-    
-        try {
-            $this->session->set('signUpStep1', [
-                'fullname' => $signUpStep1Request->getFullname(),
-                'birthdate' => $signUpStep1Request->getBirthdate()
-            ]);
-    
-            return new JsonResponse(['status' => Response::HTTP_OK]);
-        } catch (\Exception $e) {
-            error_log('Error in handleStep1: ' . $e->getMessage());
-            return new JsonResponse(['status' => Response::HTTP_INTERNAL_SERVER_ERROR, 'message' => $e->getMessage()]);
-        }
-    }     
+        $sessionData = [
+            'fullname' => $signUpStep1Request->getFullname(),
+            'birthdate' => $signUpStep1Request->getBirthdate(),
+        ];
+
+        return $this->handleStep($request, 'signUpStep1', $sessionData);
+    }
 
     public function handleStep2(Request $request): JsonResponse
     {
         $signUpStep2Request = new SignUpStep2Request($request);
-        
-        try {
-            $this->session->set('signUpStep2', [
-                'address' => $signUpStep2Request->getAddress()
-            ]);
-    
-            return new JsonResponse(['status' => Response::HTTP_OK]);
-        } catch (\Exception $e) {
-            error_log('Error in handleStep2: ' . $e->getMessage());
-            return new JsonResponse(['status' => Response::HTTP_INTERNAL_SERVER_ERROR, 'message' => $e->getMessage()]);
-        }
-    }    
+        $sessionData = ['address' => $signUpStep2Request->getAddress()];
+
+        return $this->handleStep($request, 'signUpStep2', $sessionData);
+    }
 
     public function handleStep3(Request $request): JsonResponse
     {
         $signUpStep3Request = new SignUpStep3Request($request);
-    
-        try {
-            $this->session->set('signUpStep3', [
-                'phone' => $signUpStep3Request->getPhone(),
-                'mobile' => $signUpStep3Request->getMobile()
-            ]);
-    
-            $user = $this->userCreator->createUserFromSessionData($this->session);
-    
-            return new JsonResponse([
-                'status' => Response::HTTP_OK,
-                'entity' => $user->getId()
-            ]);
-        } catch (\Exception $e) {
-            error_log('Error in handleStep3: ' . $e->getMessage());
-            return new JsonResponse(['status' => Response::HTTP_INTERNAL_SERVER_ERROR, 'message' => $e->getMessage()]);
+        $sessionData = [
+            'phone' => $signUpStep3Request->getPhone(),
+            'mobile' => $signUpStep3Request->getMobile(),
+        ];
+
+        $response = $this->handleStep($request, 'signUpStep3', $sessionData);
+
+        if ($response->getStatusCode() === Response::HTTP_OK) {
+            try {
+                $user = $this->userCreator->createUserFromSessionData($this->session);
+
+                return new JsonResponse([
+                    'status' => Response::HTTP_OK,
+                    'entity' => $user->getId(),
+                ]);
+            } catch (\Exception $e) {
+                error_log('Error in handleStep3: ' . $e->getMessage());
+
+                return new JsonResponse([
+                    'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                    'message' => $e->getMessage()
+                ]);
+            }
         }
-    }    
+
+        return $response;
+    }
 }

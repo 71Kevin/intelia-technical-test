@@ -1,20 +1,35 @@
-
-###> symfony/framework-bundle ###
+# Symfony
 /.env.local
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
 /var/
 /vendor/
-###< symfony/framework-bundle ###
 
-###> symfony/phpunit-bridge ###
+# PHPUnit
 .phpunit
 .phpunit.result.cache
 /phpunit.xml
-###< symfony/phpunit-bridge ###
 
-node_modules
+# Vue
+node_modules/
 
-.idea
+# IDEs
+.idea/
+
+# Logs
+*.log
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# NPM
+package-lock.json
+
+# Composer
+composer.lock
+
+# Miscellaneous
+*.swp
+*.swo

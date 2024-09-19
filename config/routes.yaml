@@ -1,22 +1,27 @@
 index:
     path: /
     controller: App\Controller\UserController::signUp
-signUp:
-  path: /sign-up
-  controller: App\Controller\UserController::signUp
-signUpHandler:
-  path: /sign-up-handler
-  controller: App\Controller\UserController::signUpHandler
-  methods: POST
-signUpStep1:
-  path: /sign-up/step1
-  controller: App\Controller\UserController::handleStep1
-  methods: POST
-signUpStep2:
-  path: /sign-up/step2
-  controller: App\Controller\UserController::handleStep2
-  methods: POST
-signUpStep3:
-  path: /sign-up/step3
-  controller: App\Controller\UserController::handleStep3
-  methods: POST
+
+user_sign_up:
+    path: /sign-up
+    controller: App\Controller\UserController::signUp
+
+user_sign_up_handler:
+    path: /sign-up-handler
+    controller: App\Controller\UserController::signUpHandler
+    methods: POST
+
+user_sign_up_step1:
+    path: /sign-up/step1
+    controller: App\Controller\UserController::handleStep1
+    methods: POST
+
+user_sign_up_step2:
+    path: /sign-up/step2
+    controller: App\Controller\UserController::handleStep2
+    methods: POST
+
+user_sign_up_step3:
+    path: /sign-up/step3
+    controller: App\Controller\UserController::handleStep3
+    methods: POST

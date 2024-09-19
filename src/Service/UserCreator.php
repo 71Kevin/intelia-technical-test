@@ -11,14 +11,13 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserCreator
 {
-    private $entityManager;
-    private $passwordEncoder;
+    private EntityManagerInterface $entityManager;
+    private UserPasswordEncoderInterface $passwordEncoder;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         UserPasswordEncoderInterface $passwordEncoder
-    )
-    {
+    ) {
         $this->entityManager = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
     }
@@ -28,23 +27,22 @@ class UserCreator
         $signUpStep1 = $session->get('signUpStep1', []);
         $signUpStep2 = $session->get('signUpStep2', []);
         $signUpStep3 = $session->get('signUpStep3', []);
-    
+
         $user = new User();
-        $user->setFullname($signUpStep1['fullname'] ?? null);
+        $user->setFullname($signUpStep1['fullname'] ?? '');
         $user->setBirthdate(new \DateTime($signUpStep1['birthdate'] ?? 'now'));
-        $user->setAddress($signUpStep2['address'] ?? null);
-        $user->setPhone($signUpStep3['phone'] ?? null);
-        $user->setMobile($signUpStep3['mobile'] ?? null);
-    
-        // Definir username e password com strings vazias
-        $user->setUsername(strtolower(str_replace(' ', '.', $signUpStep1['fullname'])));
-        $user->setPassword('default_password');  // Pode ser alterado mais tarde pelo usuário
+        $user->setAddress($signUpStep2['address'] ?? '');
+        $user->setPhone($signUpStep3['phone'] ?? '');
+        $user->setMobile($signUpStep3['mobile'] ?? '');
+
+        $user->setUsername(strtolower(str_replace(' ', '.', $signUpStep1['fullname'] ?? '')));
         
-    
+        $encodedPassword = $this->passwordEncoder->encodePassword($user, 'default_password');
+        $user->setPassword($encodedPassword);
+
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-    
+
         return $user;
     }
-    
 }

@@ -1,65 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Request;
 
-use JMS\Serializer\Annotation as Serializer;
-use Rollerworks\Component\PasswordStrength\Validator\Constraints\PasswordStrength;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\Request;
 
-class SignUpRequest
+abstract class SignUpRequest
 {
-    /**
-     * @var string
-     * @Serializer\Type("string")
-     * @Assert\Type("string")
-     * @Assert\NotBlank()
-     */
-    private $fullname;
+    protected array $requestData;
 
-    /**
-     * @var string
-     * @Serializer\Type("string")
-     * @Assert\Type("string")
-     * @Assert\NotBlank()
-     */
-    private $username;
-
-    /**
-     * @var string
-     * @Serializer\Type("string")
-     * @Assert\Type("string")
-     * @Assert\NotBlank()
-     * @Assert\Email()
-     */
-    private $email;
-
-    /**
-     * @var string
-     * @Serializer\Type("string")
-     * @Assert\Type("string")
-     * @Assert\NotBlank()
-     * @PasswordStrength(minLength=8, minStrength=3)
-     */
-    private $password;
-
-    public function getFullname(): string
+    public function __construct(Request $request, array $requiredFields)
     {
-        return $this->fullname;
+        $this->requestData = [];
+        foreach ($requiredFields as $field) {
+            $this->requestData[$field] = $request->get($field);
+        }
     }
 
-    public function getUsername(): string
+    protected function getField(string $field): ?string
     {
-        return $this->username;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    public function getPassword(): string
-    {
-        return $this->password;
+        return $this->requestData[$field] ?? null;
     }
 }
