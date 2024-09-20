@@ -24,12 +24,6 @@ node_modules/
 .DS_Store
 Thumbs.db
 
-# NPM
-package-lock.json
-
-# Composer
-composer.lock
-
 # Miscellaneous
 *.swp
 *.swo
