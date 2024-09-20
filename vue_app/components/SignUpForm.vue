@@ -140,23 +140,57 @@ export default {
       return this.currentStep < 3 ? "Next" : "Submit";
     },
   },
+  mounted() {
+    this.fetchSavedData();
+  },
   methods: {
+    async fetchSavedData() {
+      try {
+        const response = await axios.get("/sign-up/fetch-saved-data");
+        if (response.data && Object.keys(response.data).length > 0) {
+          this.form = { ...this.form, ...response.data };
+        } else {
+          this.form = {
+            fullname: "",
+            birthdate: "",
+            street: "",
+            number: "",
+            zipCode: "",
+            city: "",
+            state: "",
+            phone: "",
+            mobile: "",
+          };
+        }
+      } catch (error) {
+        console.error("Error fetching saved data:", error);
+      }
+    },
+    
     async handleSubmit() {
       const isValid = await this.v$.$validate();
       if (!isValid) return;
       
       const formData = { ...this.form };
-      if (this.currentStep === 1) {
-        await axios.post("/sign-up/step1", formData);
-        this.currentStep++;
-      } else if (this.currentStep === 2) {
-        await axios.post("/sign-up/step2", formData);
-        this.currentStep++;
-      } else if (this.currentStep === 3) {
-        await axios.post("/sign-up/step3", formData);
-        alert("Registration complete!");
+      try {
+        if (this.currentStep === 1) {
+          await axios.post("/sign-up/step1", formData);
+          this.currentStep++;
+        } else if (this.currentStep === 2) {
+          await axios.post("/sign-up/step2", formData);
+          this.currentStep++;
+        } else if (this.currentStep === 3) {
+          await axios.post("/sign-up/step3", formData);
+          alert("Registration complete!");
+          
+          await axios.post("/sign-up/clear-session");
+        }
+      } catch (error) {
+        console.error("Error during form submission:", error.response || error);
+        alert("An error occurred: " + (error.response?.data?.message || "Unexpected error."));
       }
-    },
+    }
+    
   },
   setup() {
     const v$ = useVuelidate();

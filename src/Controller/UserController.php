@@ -40,10 +40,31 @@ class UserController extends AbstractController
     {
         try {
             $this->session->set($stepKey, $sessionData);
-
+    
+            $user = $this->userCreator->createOrUpdateUserFromSessionData($this->session);
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+    
             return new JsonResponse(['status' => Response::HTTP_OK]);
         } catch (\Exception $e) {
+            return new JsonResponse([
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+    
+    public function fetchSavedData(): JsonResponse
+    {
+        try {
+            $signUpStep1 = $this->session->get('signUpStep1', []);
+            $signUpStep2 = $this->session->get('signUpStep2', []);
+            $signUpStep3 = $this->session->get('signUpStep3', []);
 
+            $sessionData = array_merge($signUpStep1, $signUpStep2, $signUpStep3);
+
+            return new JsonResponse($sessionData, Response::HTTP_OK);
+        } catch (\Exception $e) {
             return new JsonResponse([
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => $e->getMessage()
@@ -83,26 +104,38 @@ class UserController extends AbstractController
             'phone' => $signUpStep3Request->getPhone(),
             'mobile' => $signUpStep3Request->getMobile(),
         ];
-
+    
         $response = $this->handleStep($request, 'signUpStep3', $sessionData);
-
+    
         if ($response->getStatusCode() === Response::HTTP_OK) {
             try {
-                $user = $this->userCreator->createUserFromSessionData($this->session);
-
+                $user = $this->userCreator->createOrUpdateUserFromSessionData($this->session);
+    
                 return new JsonResponse([
                     'status' => Response::HTTP_OK,
                     'entity' => $user->getId(),
                 ]);
             } catch (\Exception $e) {
-
                 return new JsonResponse([
                     'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                     'message' => $e->getMessage()
-                ]);
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
-
+    
         return $response;
+    }
+
+    public function clearSession(): JsonResponse
+    {
+        try {
+            $this->session->clear();
+            return new JsonResponse(['status' => Response::HTTP_OK, 'message' => 'Session cleared']);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }

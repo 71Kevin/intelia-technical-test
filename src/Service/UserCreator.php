@@ -22,27 +22,43 @@ class UserCreator
         $this->passwordEncoder = $passwordEncoder;
     }
 
-    public function createUserFromSessionData(SessionInterface $session): User
+    public function createOrUpdateUserFromSessionData(SessionInterface $session): User
     {
+
+        $userId = $session->get('user_id', null);
+        if ($userId) {
+            $user = $this->entityManager->getRepository(User::class)->find($userId);
+        } else {
+            $user = new User();
+        }
+    
         $signUpStep1 = $session->get('signUpStep1', []);
         $signUpStep2 = $session->get('signUpStep2', []);
         $signUpStep3 = $session->get('signUpStep3', []);
-
-        $user = new User();
-        $user->setFullname($signUpStep1['fullname'] ?? '');
-        $user->setBirthdate(new \DateTime($signUpStep1['birthdate'] ?? 'now'));
-        $user->setStreet($signUpStep2['street'] ?? '');
-        $user->setNumber($signUpStep2['number'] ?? '');
-        $user->setZipCode($signUpStep2['zipCode'] ?? '');
-        $user->setCity($signUpStep2['city'] ?? '');
-        $user->setState($signUpStep2['state'] ?? '');
-
-        $user->setPhone($signUpStep3['phone'] ?? '');
-        $user->setMobile($signUpStep3['mobile'] ?? '');
-
+    
+        if (!empty($signUpStep1)) {
+            $user->setFullname($signUpStep1['fullname'] ?? '');
+            $user->setBirthdate(new \DateTime($signUpStep1['birthdate'] ?? 'now'));
+        }
+    
+        if (!empty($signUpStep2)) {
+            $user->setStreet($signUpStep2['street'] ?? '');
+            $user->setNumber($signUpStep2['number'] ?? '');
+            $user->setZipCode($signUpStep2['zipCode'] ?? '');
+            $user->setCity($signUpStep2['city'] ?? '');
+            $user->setState($signUpStep2['state'] ?? '');
+        }
+    
+        if (!empty($signUpStep3)) {
+            $user->setPhone($signUpStep3['phone'] ?? '');
+            $user->setMobile($signUpStep3['mobile'] ?? '');
+        }
+    
         $this->entityManager->persist($user);
         $this->entityManager->flush();
-
+    
+        $session->set('user_id', $user->getId());
+    
         return $user;
     }
 }

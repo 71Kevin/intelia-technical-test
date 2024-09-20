@@ -25,3 +25,11 @@ user_sign_up_step3:
     path: /sign-up/step3
     controller: App\Controller\UserController::handleStep3
     methods: POST
+
+fetch_saved_data:
+    path: /sign-up/fetch-saved-data
+    controller: App\Controller\UserController::fetchSavedData
+
+clear_session:
+    path: /sign-up/clear-session
+    controller: App\Controller\UserController::clearSession
