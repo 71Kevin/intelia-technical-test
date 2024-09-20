@@ -61,6 +61,7 @@ import { required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import FormInput from "./FormInput.vue";
 import axios from "axios";
+import "../assets/css/signupform.css";
 
 export default {
   name: "SignUpForm",
@@ -130,71 +131,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.form-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f7f7f7;
-}
-
-.form-container {
-  background: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-  max-width: 450px;
-  width: 100%;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
-}
-
-.form-actions {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  border: none;
-  padding: 10px 20px;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-.is-invalid {
-  border-color: red;
-}
-
-.invalid-feedback {
-  color: red;
-}
-
-@media (max-width: 768px) {
-  .form-container {
-    padding: 30px;
-    max-width: 95%;
-  }
-  
-  h1 {
-    font-size: 22px;
-  }
-  
-  .btn-primary {
-    width: 100%;
-  }
-}
-</style>

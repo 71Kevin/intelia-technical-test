@@ -43,7 +43,6 @@ class UserController extends AbstractController
 
             return new JsonResponse(['status' => Response::HTTP_OK]);
         } catch (\Exception $e) {
-            error_log('Error in handleStep ' . $stepKey . ': ' . $e->getMessage());
 
             return new JsonResponse([
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
@@ -90,7 +89,6 @@ class UserController extends AbstractController
                     'entity' => $user->getId(),
                 ]);
             } catch (\Exception $e) {
-                error_log('Error in handleStep3: ' . $e->getMessage());
 
                 return new JsonResponse([
                     'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
