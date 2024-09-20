@@ -65,10 +65,16 @@ class UserController extends AbstractController
     public function handleStep2(Request $request): JsonResponse
     {
         $signUpStep2Request = new SignUpStep2Request($request);
-        $sessionData = ['address' => $signUpStep2Request->getAddress()];
-
+        $sessionData = [
+            'street' => $signUpStep2Request->getStreet(),
+            'number' => $signUpStep2Request->getNumber(),
+            'zipCode' => $signUpStep2Request->getZipCode(),
+            'city' => $signUpStep2Request->getCity(),
+            'state' => $signUpStep2Request->getState()
+        ];
+    
         return $this->handleStep($request, 'signUpStep2', $sessionData);
-    }
+    }    
 
     public function handleStep3(Request $request): JsonResponse
     {

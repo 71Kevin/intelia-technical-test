@@ -10,11 +10,31 @@ class SignUpStep2Request extends SignUpRequest
 {
     public function __construct(Request $request)
     {
-        parent::__construct($request, ['address']);
+        parent::__construct($request, ['street', 'number', 'zipCode', 'city', 'state']);
     }
 
-    public function getAddress(): ?string
+    public function getStreet(): ?string
     {
-        return $this->getField('address');
+        return $this->getField('street');
+    }
+
+    public function getNumber(): ?string
+    {
+        return $this->getField('number');
+    }
+
+    public function getZipCode(): ?string
+    {
+        return $this->getField('zipCode');
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->getField('city');
+    }
+
+    public function getState(): ?string
+    {
+        return $this->getField('state');
     }
 }

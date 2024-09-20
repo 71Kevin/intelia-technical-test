@@ -31,14 +31,14 @@ class UserCreator
         $user = new User();
         $user->setFullname($signUpStep1['fullname'] ?? '');
         $user->setBirthdate(new \DateTime($signUpStep1['birthdate'] ?? 'now'));
-        $user->setAddress($signUpStep2['address'] ?? '');
+        $user->setStreet($signUpStep2['street'] ?? '');
+        $user->setNumber($signUpStep2['number'] ?? '');
+        $user->setZipCode($signUpStep2['zipCode'] ?? '');
+        $user->setCity($signUpStep2['city'] ?? '');
+        $user->setState($signUpStep2['state'] ?? '');
+
         $user->setPhone($signUpStep3['phone'] ?? '');
         $user->setMobile($signUpStep3['mobile'] ?? '');
-
-        $user->setUsername(strtolower(str_replace(' ', '.', $signUpStep1['fullname'] ?? '')));
-        
-        $encodedPassword = $this->passwordEncoder->encodePassword($user, 'default_password');
-        $user->setPassword($encodedPassword);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

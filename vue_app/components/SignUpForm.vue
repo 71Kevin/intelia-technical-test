@@ -22,10 +22,35 @@
         
         <div v-if="currentStep === 2">
           <FormInput
-          label="Address"
-          v-model="form.address"
-          :error="v$.form.address.$error"
-          error-message="Address is required."
+          label="Street"
+          v-model="form.street"
+          :error="v$.form.street.$error"
+          error-message="Street is required."
+          />
+          <FormInput
+          label="Number"
+          v-model="form.number"
+          :error="v$.form.number.$error"
+          error-message="Number is required."
+          />
+          <FormInput
+          label="Zip Code"
+          v-mask="'#####-###'"
+          v-model="form.zipCode"
+          :error="v$.form.zipCode.$error"
+          error-message="Zip Code is required."
+          />
+          <FormInput
+          label="City"
+          v-model="form.city"
+          :error="v$.form.city.$error"
+          error-message="City is required."
+          />
+          <FormInput
+          label="State"
+          v-model="form.state"
+          :error="v$.form.state.$error"
+          error-message="State is required."
           />
         </div>
         
@@ -72,7 +97,11 @@ export default {
       form: {
         fullname: "",
         birthdate: "",
-        address: "",
+        street: "",
+        number: "",
+        zipCode: "",
+        city: "",
+        state: "",
         phone: "",
         mobile: "",
       },
@@ -89,7 +118,11 @@ export default {
     } else if (this.currentStep === 2) {
       return {
         form: {
-          address: { required },
+          street: { required },
+          number: { required },
+          zipCode: { required },
+          city: { required },
+          state: { required },
         },
       };
     } else if (this.currentStep === 3) {

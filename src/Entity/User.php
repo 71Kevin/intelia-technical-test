@@ -30,7 +30,27 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $address;
+    private $street;
+
+    /**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $number;
+
+    /**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $zipCode;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $city;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $state;
 
     /**
      * @ORM\Column(type="string", length=15)
@@ -41,16 +61,6 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=15)
      */
     private $mobile;
-
-    /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
-    private $username;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $password;
 
     public function getId(): ?int
     {
@@ -81,14 +91,62 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getAddress(): ?string
+    public function getStreet(): ?string
     {
-        return $this->address;
+        return $this->street;
     }
 
-    public function setAddress(string $address): self
+    public function setStreet(string $street): self
     {
-        $this->address = $address;
+        $this->street = $street;
+
+        return $this;
+    }
+
+    public function getNumber(): ?string
+    {
+        return $this->number;
+    }
+
+    public function setNumber(string $number): self
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
+    public function getZipCode(): ?string
+    {
+        return $this->zipCode;
+    }
+
+    public function setZipCode(string $zipCode): self
+    {
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(string $state): self
+    {
+        $this->state = $state;
 
         return $this;
     }
@@ -117,33 +175,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getUsername(): ?string
+    public function getRoles(): array
     {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): self
-    {
-        $this->username = $username;
-
-        return $this;
+        return ['ROLE_USER'];
     }
 
     public function getPassword(): ?string
     {
         return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    public function getRoles()
-    {
-        return ['ROLE_USER'];
     }
 
     public function getSalt()
@@ -153,5 +192,10 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->fullname;
     }
 }
