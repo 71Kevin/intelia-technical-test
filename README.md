@@ -93,3 +93,33 @@ http://127.0.0.1:8000/
   ```bash
   npm run build
   ```
+
+## Rodando a aplicação via Docker
+
+Se preferir subir a aplicação utilizando Docker, siga os passos abaixo:
+
+### 1. Subindo a aplicação via Docker
+
+Com o Docker instalado, execute os seguintes comandos para subir a aplicação:
+
+#### Localmente:
+
+```bash
+bash deploy.sh local deploy
+```
+
+#### Em um servidor remoto:
+
+```bash
+bash deploy.sh remote deploy
+```
+
+Esse script automatiza a criação do container e a execução da aplicação, seja local ou remotamente.
+
+### 3. Acessando a aplicação
+
+Após subir o container, acesse a aplicação no seu navegador:
+
+```
+http://127.0.0.1:8000/
+```
